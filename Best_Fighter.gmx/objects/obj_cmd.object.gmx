@@ -4,10 +4,86 @@
   <solid>0</solid>
   <visible>-1</visible>
   <depth>0</depth>
-  <persistent>0</persistent>
+  <persistent>-1</persistent>
   <parentName>&lt;undefined&gt;</parentName>
   <maskName>&lt;undefined&gt;</maskName>
-  <events/>
+  <events>
+    <event eventtype="0" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/* Paramters */
+NUM_BOTS = 2;
+NUM_NN_INPUTS = 10; // Closest enemy x, Closest enemy y, Sensing points 
+NUM_NN_OUTPUTS = 5; // Left, Right, Down (shield), Jump, Attack
+NUM_NN_LAYERS = 5;
+
+/* Action Enum */
+enum Action // Make sure number of enum varaibles matches NUM_NN_OUTPUTS
+{
+    left,
+    right,
+    down,
+    jump,
+    attack
+}
+
+var i, j, k;
+
+// Initialize weight and bias arrays for each bot
+var NN_weights = [NUM_NN_LAYERS, NUM_NN_INPUTS];
+global weights[NUM_BOTS];
+global biases[NUM_BOTS, NUM_NN_LAYERS];
+
+for (i = 0; i &lt; NUM_BOTS; ++i)
+{
+    for (j = 0; j &lt; NUM_NN_LAYERS; ++j)
+    {
+        for (k = 0; k &lt; NUM_NN_INPUTS; ++k)
+        {
+            NN_weights[j][k] = 0;
+        }
+    }
+    weights[i] = NN_weights;
+}
+
+for (i = 0; i &lt; NUM_BOTS; ++i)
+{
+    for (j = 0; j &lt; NUM_NN_LAYERS; ++j)
+    {
+        biases[i, j] = 0;
+    }
+}
+
+// Initialize action arrays for each bot
+global actions[NUM_BOTS, NUM_NN_OUTPUTS];
+
+for (i = 0; i &lt; NUM_BOTS; ++i)
+{
+    for (j = 0; j &lt; NUM_NN_OUTPUTS, ++j)
+    {
+        actions[i, j] = false;
+    }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+  </events>
   <PhysicsObject>0</PhysicsObject>
   <PhysicsObjectSensor>0</PhysicsObjectSensor>
   <PhysicsObjectShape>0</PhysicsObjectShape>
