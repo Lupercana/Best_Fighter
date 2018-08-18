@@ -5,9 +5,27 @@
   </Configs>
   <NewExtensions/>
   <sounds name="sound"/>
-  <sprites name="sprites"/>
+  <sprites name="sprites">
+    <sprite>sprites\sp_bot</sprite>
+    <sprites name="walls">
+      <sprite>sprites\sp_ground</sprite>
+      <sprite>sprites\sp_platform</sprite>
+    </sprites>
+  </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
+  <objects name="objects">
+    <object>objects\obj_cmd</object>
+    <object>objects\obj_bot</object>
+    <objects name="walls">
+      <object>objects\obj_wall</object>
+      <object>objects\obj_ground</object>
+      <object>objects\obj_platform</object>
+    </objects>
+  </objects>
+  <rooms name="rooms">
+    <room>rooms\rm_arena_one</room>
+  </rooms>
   <help>
     <rtf>help.rtf</rtf>
   </help>
