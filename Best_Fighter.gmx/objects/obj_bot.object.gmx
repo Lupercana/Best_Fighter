@@ -7,7 +7,128 @@
   <persistent>0</persistent>
   <parentName>&lt;undefined&gt;</parentName>
   <maskName>&lt;undefined&gt;</maskName>
-  <events/>
+  <events>
+    <event eventtype="0" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/* Parameters */
+
+/* Instance vars */
+g = 0.8;
+terminal_vel = 30;
+spd = 5;
+jump_vel = 10;
+y_vel = 0;
+x_vel = 0;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="3" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/* Input Commands */
+var left, right, down, attack, jump;
+// Get from NN
+/*
+left = bot_actions[Action.left];
+right = bot_actions[Action.right];
+down = bot_actions[Action.down];
+attack = bot_actions[Action.attack];
+jump = bot_actions[Action.jump];
+*/
+// Get from User
+left = keyboard_check(ord('A'));
+right = keyboard_check(ord('D'));
+down = keyboard_check(ord('S'));
+attack = keyboard_check(ord('J'));
+jump = keyboard_check(ord('W'));
+
+/* Process commands */
+// Side Movement
+if (left)
+    x_vel = -spd;
+else if (right)
+    x_vel = spd;
+else
+    x_vel = 0;
+// Jump
+if (jump)
+{
+    if (place_meeting(x, y + 1, obj_wall))
+        y_vel -= jump_vel;
+}
+// Attack
+// Shield
+    
+/* Physics */
+// Downward collision
+if (!(place_meeting(x - spd, y + 1, obj_wall) &amp;&amp; place_meeting(x + spd, y + 1, obj_wall)))
+{
+    y_vel += g;
+    if (y_vel &gt; terminal_vel)
+        y_vel = terminal_vel;
+}
+else if (y_vel &gt; 0)
+{
+    y_vel = 0;
+    
+    while (place_meeting(x, y, obj_wall))
+        y--;
+}
+// Upward collision
+if ((position_meeting(x - spd, y - (sprite_get_height(sprite_index) + 1), obj_wall) || position_meeting(x + spd, y - (sprite_get_height(sprite_index) + 1), obj_wall)) &amp;&amp; y_vel &lt; 0)
+{
+    y_vel = 0;
+    
+    while (place_meeting(x, y, obj_wall))
+        y++;
+}
+    
+if (!place_meeting(x + x_vel, y - 1, obj_wall))
+    x += x_vel;
+else
+{
+    while (!place_meeting(x + sign(x_vel), y - 1, obj_wall))
+        x += sign(x_vel);
+}
+   
+y += y_vel;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+  </events>
   <PhysicsObject>0</PhysicsObject>
   <PhysicsObjectSensor>0</PhysicsObjectSensor>
   <PhysicsObjectShape>0</PhysicsObjectShape>

@@ -44,9 +44,9 @@ enum Action // Make sure number of enum varaibles matches NUM_NN_OUTPUTS
 var i, j, k;
 
 // Initialize weight and bias arrays for each bot
-var NN_weights = [NUM_NN_LAYERS, NUM_NN_INPUTS];
-global weights[NUM_BOTS];
-global biases[NUM_BOTS, NUM_NN_LAYERS];
+var NN_weights = undefined;
+global.weights = undefined;
+global.biases = undefined;
 
 for (i = 0; i &lt; NUM_BOTS; ++i)
 {
@@ -54,7 +54,7 @@ for (i = 0; i &lt; NUM_BOTS; ++i)
     {
         for (k = 0; k &lt; NUM_NN_INPUTS; ++k)
         {
-            NN_weights[j][k] = 0;
+            NN_weights[j, k] = 0;
         }
     }
     weights[i] = NN_weights;
@@ -69,13 +69,13 @@ for (i = 0; i &lt; NUM_BOTS; ++i)
 }
 
 // Initialize action arrays for each bot
-global actions[NUM_BOTS, NUM_NN_OUTPUTS];
+global.bot_actions = undefined;
 
 for (i = 0; i &lt; NUM_BOTS; ++i)
 {
-    for (j = 0; j &lt; NUM_NN_OUTPUTS, ++j)
+    for (j = 0; j &lt; NUM_NN_OUTPUTS; ++j)
     {
-        actions[i, j] = false;
+        bot_actions[i, j] = false;
     }
 }
 </string>
