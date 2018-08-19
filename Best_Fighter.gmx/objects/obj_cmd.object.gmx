@@ -31,15 +31,12 @@ NUM_NN_INPUTS = 10; // Closest enemy x, Closest enemy y, Sensing points
 NUM_NN_OUTPUTS = 5; // Left, Right, Down (shield), Jump, Attack
 NUM_NN_LAYERS = 5;
 
-/* Action Enum */
-enum Action // Make sure number of enum varaibles matches NUM_NN_OUTPUTS
-{
-    left,
-    right,
-    down,
-    jump,
-    attack
-}
+// Action enums
+action_left = 0;
+action_right = 1;
+action_down = 1;
+action_jump = 1;
+action_attack = 1;
 
 var i, j, k;
 

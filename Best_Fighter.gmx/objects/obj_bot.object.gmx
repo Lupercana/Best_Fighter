@@ -28,6 +28,7 @@
             <string>/* Parameters */
 
 /* Instance vars */
+jump_prev = false;
 g = 0.8;
 terminal_vel = 30;
 spd = 5;
@@ -60,11 +61,11 @@ x_vel = 0;
 var left, right, down, attack, jump;
 // Get from NN
 /*
-left = bot_actions[Action.left];
-right = bot_actions[Action.right];
-down = bot_actions[Action.down];
-attack = bot_actions[Action.attack];
-jump = bot_actions[Action.jump];
+left = bot_actions[action_left];
+right = bot_actions[action_right];
+down = bot_actions[action_down];
+attack = bot_actions[action_attack];
+jump = bot_actions[action_jump];
 */
 // Get from User
 left = keyboard_check(ord('A'));
@@ -82,11 +83,12 @@ else if (right)
 else
     x_vel = 0;
 // Jump
-if (jump)
+if (!jump_prev &amp;&amp; jump)
 {
     if (place_meeting(x, y + 1, obj_wall))
         y_vel -= jump_vel;
 }
+jump_prev = jump;
 // Attack
 // Shield
     
@@ -103,15 +105,16 @@ else if (y_vel &gt; 0)
     y_vel = 0;
     
     while (place_meeting(x, y, obj_wall))
-        y--;
+        --y;
 }
 // Upward collision
-if ((position_meeting(x - spd, y - (sprite_get_height(sprite_index) + 1), obj_wall) || position_meeting(x + spd, y - (sprite_get_height(sprite_index) + 1), obj_wall)) &amp;&amp; y_vel &lt; 0)
+if ((place_meeting(x - spd, y - 1, obj_wall) || place_meeting(x + spd, y - 1, obj_wall)) &amp;&amp; y_vel &lt; 0)
 {
+
     y_vel = 0;
     
     while (place_meeting(x, y, obj_wall))
-        y++;
+        ++y;
 }
     
 if (!place_meeting(x + x_vel, y - 1, obj_wall))
