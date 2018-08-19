@@ -25,25 +25,54 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>/* Parameters */
+            <string>// Health
+STARTING_HEALTH = 100
+current_health = STARTING_HEALTH;
 
-/* Instance vars */
 // Movement
+G = 0.8;
+TERMINAL_VEL = 30;
+HSPD = 5;
+JUMP_VEL = 15;
 jump_prev = false;
-g = 0.8;
-terminal_vel = 30;
-spd = 5;
-jump_vel = 15;
+facing_right = true;
 y_vel = 0;
 x_vel = 0;
 
 // Shield
+SHIELD_MAX_HEALTH = 100;
+SHIELD_DECAY = 1.0; // Per step
+SHIELD_RECOVERY = 0.5; // Per step
+SHIELD_MIN_ALPHA = 0.25; // 0 to 1
 shielding = false;
-shield_health = 100;
-shield_max_health = 100;
-shield_decay = 1.0;
-shield_recovery = 0.5;
-shield_min_alpha = 0.25;
+shield_health = SHIELD_MAX_HEALTH;
+
+// Attacks
+ATTACK_CD = 1; // Secs
+can_attack = true;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>can_attack = true;
 </string>
           </argument>
         </arguments>
@@ -70,11 +99,11 @@ shield_min_alpha = 0.25;
 var left, right, down, attack, jump;
 // Get from NN
 /*
-left = bot_actions[action_left];
-right = bot_actions[action_right];
-down = bot_actions[action_down];
-attack = bot_actions[action_attack];
-jump = bot_actions[action_jump];
+left = bot_actions[Action.left];
+right = bot_actions[Action.right];
+down = bot_actions[Action.down];
+attack = bot_actions[Action.attack];
+jump = bot_actions[Action.jump];
 */
 // Get from User
 left = keyboard_check(ord('A'));
@@ -86,22 +115,28 @@ attack = keyboard_check(ord('J'));
 /* Process commands */
 // Side Movement
 if (left)
-    x_vel = -spd;
+{
+    facing_right = false;
+    x_vel = -HSPD;
+}
 else if (right)
-    x_vel = spd;
+{
+    facing_right = true;
+    x_vel = HSPD;
+}
 else
     x_vel = 0;
 // Jump
 if (!jump_prev &amp;&amp; jump)
 {
     if (place_meeting(x, y + 1, obj_wall))
-        y_vel -= jump_vel;
+        y_vel -= JUMP_VEL;
 }
 jump_prev = jump;
 // Shield, TODO: Penalize broken shields
 if (shield &amp;&amp; y_vel == 0)
 {
-    shield_health -= shield_decay;
+    shield_health -= SHIELD_DECAY;
     if (shield_health &lt; 0)
         shield_health = 0;
         
@@ -113,20 +148,32 @@ if (shield &amp;&amp; y_vel == 0)
 else
 {
     shielding = false;
-    shield_health += shield_recovery;
-    if (shield_health &gt; shield_max_health)
-        shield_health = shield_max_health;
+    shield_health += SHIELD_RECOVERY;
+    if (shield_health &gt; SHIELD_MAX_HEALTH)
+        shield_health = SHIELD_MAX_HEALTH;
 }
-image_alpha = shield_health / (shield_max_health * 1 / (1 - shield_min_alpha)) + shield_min_alpha;
+image_alpha = shield_health / (SHIELD_MAX_HEALTH * 1 / (1 - SHIELD_MIN_ALPHA)) + SHIELD_MIN_ALPHA;
 if (shielding)
     x_vel = 0;
 // Attack
-
+if (attack &amp;&amp; can_attack)
+{
+    if (facing_right)
+        dir_mult = 1;
+    else
+        dir_mult = -1;
+    obj = instance_create(x + dir_mult * (HSPD  + sprite_get_width(sp_fireball) / 2 + sprite_get_width(sprite_index) / 2), 
+                          y - sprite_get_height(sprite_index) / 2, obj_fireball);
+    obj.dir = dir_mult;
     
+    can_attack = false;
+    alarm[0] = ATTACK_CD * room_speed;
+}
+
 /* Physics */
-y_vel += g;
-if (y_vel &gt; terminal_vel)
-    y_vel = terminal_vel;
+y_vel += G;
+if (y_vel &gt; TERMINAL_VEL)
+    y_vel = TERMINAL_VEL;
 
 if (place_meeting(x + x_vel, y, obj_wall)) 
 {
@@ -143,6 +190,48 @@ if (place_meeting(x, y + y_vel, obj_wall))
 
 x += x_vel;
 y += y_vel;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="8" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>var BAR_VERT_OFFSET = 5;
+var BAR_HEIGHT = 5;
+
+draw_self();
+
+/* Draw health bar */
+// Outline
+draw_set_colour(c_black);
+draw_rectangle(x - (sprite_get_width(sprite_index) / 2 + 1), 
+               y - (sprite_get_height(sprite_index) + BAR_HEIGHT + BAR_VERT_OFFSET + 1),
+               x + (sprite_get_width(sprite_index) / 2 + 1), 
+               y - (sprite_get_height(sprite_index) - 1 + BAR_VERT_OFFSET),
+               true);
+// Fill
+draw_set_colour(c_lime);
+draw_rectangle(x - (sprite_get_width(sprite_index) / 2), 
+               y - (sprite_get_height(sprite_index) + BAR_HEIGHT + BAR_VERT_OFFSET),
+               x + (sprite_get_width(sprite_index) / 2) * (current_health / STARTING_HEALTH), 
+               y - (sprite_get_height(sprite_index) + BAR_VERT_OFFSET),
+               false);
 </string>
           </argument>
         </arguments>
