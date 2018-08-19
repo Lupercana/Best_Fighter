@@ -93,38 +93,24 @@ jump_prev = jump;
 // Shield
     
 /* Physics */
-// Downward collision
-if (!(place_meeting(x - spd, y + 1, obj_wall) &amp;&amp; place_meeting(x + spd, y + 1, obj_wall)))
-{
-    y_vel += g;
-    if (y_vel &gt; terminal_vel)
-        y_vel = terminal_vel;
-}
-else if (y_vel &gt; 0)
-{
-    y_vel = 0;
-    
-    while (place_meeting(x, y, obj_wall))
-        --y;
-}
-// Upward collision
-if ((place_meeting(x - spd, y - 1, obj_wall) || place_meeting(x + spd, y - 1, obj_wall)) &amp;&amp; y_vel &lt; 0)
-{
+y_vel += g;
+if (y_vel &gt; terminal_vel)
+    y_vel = terminal_vel;
 
-    y_vel = 0;
-    
-    while (place_meeting(x, y, obj_wall))
-        ++y;
-}
-    
-if (!place_meeting(x + x_vel, y - 1, obj_wall))
-    x += x_vel;
-else
+if (place_meeting(x + x_vel, y, obj_wall)) 
 {
-    while (!place_meeting(x + sign(x_vel), y - 1, obj_wall))
-        x += sign(x_vel);
+   while (!place_meeting(x + sign(x_vel), y, obj_wall)) 
+      x += sign(x_vel);
+   x_vel = 0;
 }
-   
+if (place_meeting(x, y + y_vel, obj_wall)) 
+{
+   while (!place_meeting(x, y + sign(y_vel), obj_wall)) 
+      y += sign(y_vel);
+   y_vel = 0;
+}
+ 
+x += x_vel;
 y += y_vel;
 </string>
           </argument>
